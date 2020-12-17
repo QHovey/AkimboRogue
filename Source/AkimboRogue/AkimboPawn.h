@@ -23,6 +23,9 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
+	// Callback for when a GameplayEffect is applied to ourselves
+	void OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
+
 	virtual void InitializeAttributes();
 	virtual void GiveAbilities();
 
@@ -40,6 +43,11 @@ public:
 
 public:
 
+	UFUNCTION(BlueprintCallable)
+	void SetRightWeapon(class AAkimboWeapon* InWeapon);
+
+public:
+
 	UPROPERTY(BlueprintReadWrite)
 	class UAkimboAbilitySystemComponent* AbilitySystemComponent;
 
@@ -51,4 +59,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Abilities")
 	TArray<TSubclassOf<class UAkimboGameplayAbility>> DefaultAbilities;
+
+public:
+
+	class AAkimboWeapon* GetRightWeapon();
+
+protected:
+
+	class AAkimboWeapon* RightWeapon;
+
 };

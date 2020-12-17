@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "AkimboPawn.h"
-#include <AbilitySystemComponent.h>
 #include "AkimboAttributeSet.h"
-#include <GameplayAbilitySpec.h>
 #include "AkimboGameplayAbility.h"
+#include "AkimboWeapon.h"
+#include <AbilitySystemComponent.h>
+#include <GameplayAbilitySpec.h>
 
 // Sets default values
 AAkimboPawn::AAkimboPawn()
@@ -21,7 +21,6 @@ AAkimboPawn::AAkimboPawn()
 void AAkimboPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AAkimboPawn::PossessedBy(AController* NewController)
@@ -31,10 +30,27 @@ void AAkimboPawn::PossessedBy(AController* NewController)
 	if (AbilitySystemComponent)
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+		AbilitySystemComponent->OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &AAkimboPawn::OnApplyGameplayEffectToSelfCallback);
 	}
 
 	InitializeAttributes();
 	GiveAbilities();
+}
+
+void AAkimboPawn::OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
+{
+	AAkimboWeapon* RW = GetRightWeapon();
+	if (RightWeapon)
+	{
+		UAkimboAbilitySystemComponent* ASC = Cast<UAkimboAbilitySystemComponent>(RW->GetAbilitySystemComponent());
+		if (ASC)
+		{
+			ASC->ApplyGameplayEffectSpecToSelf(SpecApplied);
+		}
+	}
+
+	// Repeat for Left
 }
 
 void AAkimboPawn::InitializeAttributes()
@@ -74,11 +90,24 @@ void AAkimboPawn::Tick(float DeltaTime)
 // Called to bind functionality to input
 void AAkimboPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	check(InputComponent);
 
+	//InputComponent->Bind
+
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
 UAbilitySystemComponent* AAkimboPawn::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AAkimboPawn::SetRightWeapon(class AAkimboWeapon* InWeapon)
+{
+	RightWeapon = InWeapon;
+}
+
+class AAkimboWeapon* AAkimboPawn::GetRightWeapon()
+{
+	return RightWeapon;
 }
