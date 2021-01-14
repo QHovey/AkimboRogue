@@ -25,6 +25,7 @@ protected:
 
 	// Callback for when a GameplayEffect is applied to ourselves
 	void OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
+	void ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, const FGameplayEffectSpec& SpecApplied);
 
 	virtual void InitializeAttributes();
 	virtual void GiveAbilities();
@@ -45,6 +46,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetRightWeapon(class AAkimboWeapon* InWeapon);
+	UFUNCTION(BlueprintCallable)
+	void SetLeftWeapon(class AAkimboWeapon* InWeapon);
 
 public:
 
@@ -63,9 +66,10 @@ public:
 public:
 
 	class AAkimboWeapon* GetRightWeapon();
-
+	class AAkimboWeapon* GetLeftWeapon();
 protected:
 
 	class AAkimboWeapon* RightWeapon;
+	class AAkimboWeapon* LeftWeapon;
 
 };

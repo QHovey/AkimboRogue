@@ -40,17 +40,20 @@ void AAkimboPawn::PossessedBy(AController* NewController)
 
 void AAkimboPawn::OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
 {
-	AAkimboWeapon* RW = GetRightWeapon();
-	if (RightWeapon)
+	ApplyGameplayEffectToWeapon(GetRightWeapon(), SpecApplied);
+	ApplyGameplayEffectToWeapon(GetLeftWeapon(), SpecApplied);
+}
+
+void AAkimboPawn::ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, const FGameplayEffectSpec& SpecApplied)
+{
+	if (Weapon)
 	{
-		UAkimboAbilitySystemComponent* ASC = Cast<UAkimboAbilitySystemComponent>(RW->GetAbilitySystemComponent());
+		UAkimboAbilitySystemComponent* ASC = Cast<UAkimboAbilitySystemComponent>(Weapon->GetAbilitySystemComponent());
 		if (ASC)
 		{
 			ASC->ApplyGameplayEffectSpecToSelf(SpecApplied);
 		}
 	}
-
-	// Repeat for Left
 }
 
 void AAkimboPawn::InitializeAttributes()
@@ -107,7 +110,17 @@ void AAkimboPawn::SetRightWeapon(class AAkimboWeapon* InWeapon)
 	RightWeapon = InWeapon;
 }
 
+void AAkimboPawn::SetLeftWeapon(class AAkimboWeapon* InWeapon)
+{
+	LeftWeapon = InWeapon;
+}
+
 class AAkimboWeapon* AAkimboPawn::GetRightWeapon()
 {
 	return RightWeapon;
+}
+
+class AAkimboWeapon* AAkimboPawn::GetLeftWeapon()
+{
+	return LeftWeapon;
 }
