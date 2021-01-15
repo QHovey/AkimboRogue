@@ -46,8 +46,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetRightWeapon(class AAkimboWeapon* InWeapon);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRightWeaponEquipped(class AAkimboWeapon* Weapon);
+
 	UFUNCTION(BlueprintCallable)
 	void SetLeftWeapon(class AAkimboWeapon* InWeapon);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnLeftWeaponEquipped(class AAkimboWeapon* Weapon);
 
 public:
 
@@ -65,7 +70,9 @@ public:
 
 public:
 
+	UFUNCTION(BlueprintCallable)
 	class AAkimboWeapon* GetRightWeapon();
+	UFUNCTION(BlueprintCallable)
 	class AAkimboWeapon* GetLeftWeapon();
 protected:
 

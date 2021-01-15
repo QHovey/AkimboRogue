@@ -108,11 +108,13 @@ UAbilitySystemComponent* AAkimboPawn::GetAbilitySystemComponent() const
 void AAkimboPawn::SetRightWeapon(class AAkimboWeapon* InWeapon)
 {
 	RightWeapon = InWeapon;
+	OnRightWeaponEquipped(RightWeapon);
 }
 
 void AAkimboPawn::SetLeftWeapon(class AAkimboWeapon* InWeapon)
 {
 	LeftWeapon = InWeapon;
+	OnLeftWeaponEquipped(LeftWeapon);
 }
 
 class AAkimboWeapon* AAkimboPawn::GetRightWeapon()
