@@ -57,6 +57,10 @@ AFirstPersonCharacter::AFirstPersonCharacter()
 	L_FPHandPos = CreateDefaultSubobject<USceneComponent>(TEXT("L_FPHandPos"));
 	L_FPHandPos->SetupAttachment(CameraComponent);
 
+	// Ability System
+	AbilitySystemComponent = CreateDefaultSubobject<UAkimboAbilitySystemComponent>(TEXT("AbilitySystemComp"));
+	Attributes = CreateDefaultSubobject<UAkimboAttributeSet>(TEXT("Attributes"));
+
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
 }
@@ -66,7 +70,7 @@ void AFirstPersonCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
-	UHeadMountedDisplayFunctionLibrary::EnableHMD(IsVR);
+	OnVRModeChanged(IsVR);
 }
 
 void AFirstPersonCharacter::PossessedBy(AController* NewController)
@@ -192,14 +196,12 @@ void AFirstPersonCharacter::ToggleVRMode()
 {
 	IsVR = !IsVR;
 
-	//UHeadMountedDisplayFunctionLibrary::EnableHMD(IsVR);
-
 	OnVRModeChanged(IsVR);
 }
 
 void AFirstPersonCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (!IsVR && Value != 0.0f)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
@@ -208,7 +210,7 @@ void AFirstPersonCharacter::MoveForward(float Value)
 
 void AFirstPersonCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (!IsVR && Value != 0.0f)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
@@ -217,13 +219,19 @@ void AFirstPersonCharacter::MoveRight(float Value)
 
 void AFirstPersonCharacter::TurnAtRate(float Rate)
 {
-	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	if (!IsVR)
+	{
+		// calculate delta for this frame from the rate information
+		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	}
 }
 
 void AFirstPersonCharacter::LookUpAtRate(float Rate)
 {
-	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	if (!IsVR)
+	{
+		// calculate delta for this frame from the rate information
+		AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	}
 }
 
