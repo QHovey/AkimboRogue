@@ -14,4 +14,11 @@ class AKIMBOROGUE_API UAkimboAbilitySystemComponent : public UAbilitySystemCompo
 {
 	GENERATED_BODY()
 	
+public:
+	/** Bind to an input component with some default action names */
+	virtual void BindToInputComponent(UInputComponent* InputComponent);
+
+	/** Bind to an input component with customized bindings */
+	virtual void BindAbilityActivationToInputComponent(UInputComponent* InputComponent, FGameplayAbilityInputBinds BindInfo);
+
 };

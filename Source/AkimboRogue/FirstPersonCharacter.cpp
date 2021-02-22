@@ -137,7 +137,7 @@ void AFirstPersonCharacter::GiveAbilities()
 	{
 		for (TSubclassOf<UAkimboGameplayAbility>& Ability : DefaultAbilities)
 		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, 0, this));
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(Ability.GetDefaultObject()->AbilityInputID), this));
 		}
 	}
 }
@@ -164,6 +164,8 @@ void AFirstPersonCharacter::EquipLeftWeapon(class AAkimboWeapon* InWeapon)
 
 void AFirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
@@ -185,6 +187,13 @@ void AFirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("TurnRate", this, &AFirstPersonCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFirstPersonCharacter::LookUpAtRate);
+
+	// Attach the input to the ability system
+	if (InputComponent && AbilitySystemComponent)
+	{
+		const FGameplayAbilityInputBinds InputBinds("Confirm", "Cancel", "EAkimboAbilityInputID");
+		AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, InputBinds);
+	}
 }
 
 void AFirstPersonCharacter::OnResetVR()

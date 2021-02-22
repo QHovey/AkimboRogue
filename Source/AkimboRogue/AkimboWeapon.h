@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include <AbilitySystemInterface.h>
+#include "AkimboGameplayAbility.h"
 #include "AkimboWeapon.generated.h"
 
 UCLASS()
@@ -27,6 +28,8 @@ public:
 public:
 	class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	void OnEquippedBy(AActor* Equipper);
+
 private:
 
 	void InitializeAttributes();
@@ -45,4 +48,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Abilities")
 	TArray<TSubclassOf<class UAkimboGameplayAbility>> DefaultAbilities;
+
+	// This weapon assigns trigger abilities to this button ID
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities");
+	EAkimboAbilityInputID TriggerInput;
 };

@@ -22,14 +22,15 @@ AAkimboWeapon::AAkimboWeapon()
 void AAkimboWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	if (AbilitySystemComponent)
-	{
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	}
 
 	InitializeAttributes();
 	GiveAbilities();
+
+	if (InputComponent)
+	{
+		const FGameplayAbilityInputBinds InputBinds("Confirm", "Cancel", "EAkimboAbilityInputID");
+		AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, InputBinds);
+	}
 }
 
 // Called every frame
@@ -42,6 +43,14 @@ void AAkimboWeapon::Tick(float DeltaTime)
 UAbilitySystemComponent* AAkimboWeapon::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AAkimboWeapon::OnEquippedBy(AActor* Equipper)
+{
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, Equipper);
+	}
 }
 
 void AAkimboWeapon::InitializeAttributes()
@@ -66,7 +75,12 @@ void AAkimboWeapon::GiveAbilities()
 	{
 		for (TSubclassOf<UAkimboGameplayAbility>& Ability : DefaultAbilities)
 		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, 0, this));
+			EAkimboAbilityInputID inputID = Ability.GetDefaultObject()->AbilityInputID;
+			if (Ability.GetDefaultObject()->IsTriggerAbility)
+			{
+				inputID = TriggerInput;
+			}
+			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(inputID), this));
 		}
 	}
 }
