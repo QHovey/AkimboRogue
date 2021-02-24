@@ -57,10 +57,6 @@ AFirstPersonCharacter::AFirstPersonCharacter()
 	L_FPHandPos = CreateDefaultSubobject<USceneComponent>(TEXT("L_FPHandPos"));
 	L_FPHandPos->SetupAttachment(CameraComponent);
 
-	// Ability System
-	AbilitySystemComponent = CreateDefaultSubobject<UAkimboAbilitySystemComponent>(TEXT("AbilitySystemComp"));
-	Attributes = CreateDefaultSubobject<UAkimboAttributeSet>(TEXT("Attributes"));
-
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
 }
@@ -77,15 +73,12 @@ void AFirstPersonCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	// Player will route gameplay effects to the weapons to keep them in sync via this delegate
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
 		AbilitySystemComponent->OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &AFirstPersonCharacter::OnApplyGameplayEffectToSelfCallback);
+		AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &AFirstPersonCharacter::OnRemoveGameplayEffect);
 	}
-
-	InitializeAttributes();
-	GiveAbilities();
 }
 
 void AFirstPersonCharacter::OnConstruction(const FTransform& Transform)
@@ -103,6 +96,12 @@ void AFirstPersonCharacter::OnApplyGameplayEffectToSelfCallback(UAbilitySystemCo
 	ApplyGameplayEffectToWeapon(LeftWeapon, SpecApplied);
 }
 
+void AFirstPersonCharacter::OnRemoveGameplayEffect(const FActiveGameplayEffect& RemovedEffect)
+{
+	RemoveGameplayEffectFromWeapon(RightWeapon, RemovedEffect);
+	RemoveGameplayEffectFromWeapon(LeftWeapon, RemovedEffect);
+}
+
 void AFirstPersonCharacter::ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, const FGameplayEffectSpec& SpecApplied)
 {
 	if (Weapon)
@@ -115,36 +114,16 @@ void AFirstPersonCharacter::ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, c
 	}
 }
 
-void AFirstPersonCharacter::InitializeAttributes()
+void AFirstPersonCharacter::RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapon, const FActiveGameplayEffect& SpecToRemove)
 {
-	if (AbilitySystemComponent && DefaultAttributeEffect)
+	if (Weapon)
 	{
-		FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
-		EffectContextHandle.AddSourceObject(this);
-
-		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributeEffect, 1, EffectContextHandle);
-
-		if (SpecHandle.IsValid())
+		UAkimboAbilitySystemComponent* ASC = Cast<UAkimboAbilitySystemComponent>(Weapon->GetAbilitySystemComponent());
+		if (ASC)
 		{
-			FActiveGameplayEffectHandle GameplayEffectHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			ASC->RemoveActiveGameplayEffect(SpecToRemove.Handle);
 		}
 	}
-}
-
-void AFirstPersonCharacter::GiveAbilities()
-{
-	if (AbilitySystemComponent)
-	{
-		for (TSubclassOf<UAkimboGameplayAbility>& Ability : DefaultAbilities)
-		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(Ability.GetDefaultObject()->AbilityInputID), this));
-		}
-	}
-}
-
-UAbilitySystemComponent* AFirstPersonCharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
 }
 
 void AFirstPersonCharacter::EquipRightWeapon(class AAkimboWeapon* InWeapon)
@@ -196,6 +175,9 @@ void AFirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+// VR MODE
+
 void AFirstPersonCharacter::OnResetVR()
 {
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
@@ -207,6 +189,9 @@ void AFirstPersonCharacter::ToggleVRMode()
 
 	OnVRModeChanged(IsVR);
 }
+
+//////////////////////////////////////////////////////////////////////////
+// MOVEMENT
 
 void AFirstPersonCharacter::MoveForward(float Value)
 {

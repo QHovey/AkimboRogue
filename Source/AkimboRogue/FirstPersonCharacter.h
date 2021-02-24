@@ -10,13 +10,14 @@
 #include "AkimboAttributeSet.h"
 #include "AkimboGameplayAbility.h"
 #include "AkimboWeapon.h"
+#include "AkimboCharacter.h"
 
 #include "FirstPersonCharacter.generated.h"
 
 class UInputComponent;
 
 UCLASS(config = Game)
-class AFirstPersonCharacter : public ACharacter, public IAbilitySystemInterface
+class AFirstPersonCharacter : public AAkimboCharacter
 {
 	GENERATED_BODY()
 
@@ -51,7 +52,7 @@ public:
 
 protected:
 	virtual void BeginPlay();
-	virtual void PossessedBy(AController* NewController) override;
+	virtual void PossessedBy(AController* NewController);
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	/************************************************************************/
@@ -60,40 +61,14 @@ protected:
 
 	// Callback for when a GameplayEffect is applied to ourselves
 	void OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
+	void OnRemoveGameplayEffect(const FActiveGameplayEffect& RemovedEffect);
 	
 	// We automatically route gameplay effects to the weapons as they are treated as an extension of ourselves. Thus Guns can be buffed, stunned, etc. 
 	// Not all gameplay effects need to be routed, and will have a flag that determines if it should be.
 	void ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, const FGameplayEffectSpec& SpecApplied);
-
-	// Initialize the default attributes for this character
-	virtual void InitializeAttributes();
-
-	// Gives the default Abilities to this character
-	virtual void GiveAbilities();
+	void RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapon, const FActiveGameplayEffect& SpecToRemove);
 
 public:
-
-	// IAbilitySystemInterface
-	UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	// ~IAbilitySystemInterface
-
-protected:
-
-	/************************************************************************/
-	/* AbilitySystem Properties									            */
-	/************************************************************************/
-
-	UPROPERTY(BlueprintReadWrite)
-	class UAkimboAbilitySystemComponent* AbilitySystemComponent;
-
-	UPROPERTY()
-	class UAkimboAttributeSet* Attributes;
-
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attributes")
-	TSubclassOf<class UAkimboGameplayEffect> DefaultAttributeEffect;
-
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Abilities")
-	TArray<TSubclassOf<class UAkimboGameplayAbility>> DefaultAbilities;
 
 	/************************************************************************/
 	/* Weapon Management	                                                */
