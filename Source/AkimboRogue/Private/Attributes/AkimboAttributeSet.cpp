@@ -6,4 +6,5 @@
 UAkimboAttributeSet::UAkimboAttributeSet()
 {
 	Health = 100.f;
+	HealthMax = 100.0f;
 }

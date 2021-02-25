@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Actors/FirstPersonCharacter.h"
+#include "Actors/AkimboPlayerCharacter.h"
 
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -24,7 +24,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 //////////////////////////////////////////////////////////////////////////
 // AFirstPersonTemplateCharacter
 
-AFirstPersonCharacter::AFirstPersonCharacter()
+AAkimboPlayerCharacter::AAkimboPlayerCharacter()
 {
 	// Set size for collision capsule
 	float initCapsuleHalfHeight = 96.0f;
@@ -62,7 +62,7 @@ AFirstPersonCharacter::AFirstPersonCharacter()
 	//bUsingMotionControllers = true;
 }
 
-void AFirstPersonCharacter::BeginPlay()
+void AAkimboPlayerCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
@@ -70,19 +70,19 @@ void AFirstPersonCharacter::BeginPlay()
 	OnVRModeChanged(IsVR);
 }
 
-void AFirstPersonCharacter::PossessedBy(AController* NewController)
+void AAkimboPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
 	// Player will route gameplay effects to the weapons to keep them in sync via this delegate
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &AFirstPersonCharacter::OnApplyGameplayEffectToSelfCallback);
-		AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &AFirstPersonCharacter::OnRemoveGameplayEffect);
+		AbilitySystemComponent->OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &AAkimboPlayerCharacter::OnApplyGameplayEffectToSelfCallback);
+		AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &AAkimboPlayerCharacter::OnRemoveGameplayEffect);
 	}
 }
 
-void AFirstPersonCharacter::OnConstruction(const FTransform& Transform)
+void AAkimboPlayerCharacter::OnConstruction(const FTransform& Transform)
 {
 	float CapsuleHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
 	VRRoot->SetRelativeLocation(FVector(0.f, 0.f, -CapsuleHalfHeight));
@@ -91,19 +91,19 @@ void AFirstPersonCharacter::OnConstruction(const FTransform& Transform)
 //////////////////////////////////////////////////////////////////////////
 // AbilitySystem
 
-void AFirstPersonCharacter::OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
+void AAkimboPlayerCharacter::OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
 {
 	ApplyGameplayEffectToWeapon(RightWeapon, SpecApplied);
 	ApplyGameplayEffectToWeapon(LeftWeapon, SpecApplied);
 }
 
-void AFirstPersonCharacter::OnRemoveGameplayEffect(const FActiveGameplayEffect& RemovedEffect)
+void AAkimboPlayerCharacter::OnRemoveGameplayEffect(const FActiveGameplayEffect& RemovedEffect)
 {
 	RemoveGameplayEffectFromWeapon(RightWeapon, RemovedEffect);
 	RemoveGameplayEffectFromWeapon(LeftWeapon, RemovedEffect);
 }
 
-void AFirstPersonCharacter::ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, const FGameplayEffectSpec& SpecApplied)
+void AAkimboPlayerCharacter::ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, const FGameplayEffectSpec& SpecApplied)
 {
 	if (Weapon)
 	{
@@ -115,7 +115,7 @@ void AFirstPersonCharacter::ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, c
 	}
 }
 
-void AFirstPersonCharacter::RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapon, const FActiveGameplayEffect& SpecToRemove)
+void AAkimboPlayerCharacter::RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapon, const FActiveGameplayEffect& SpecToRemove)
 {
 	if (Weapon)
 	{
@@ -127,13 +127,13 @@ void AFirstPersonCharacter::RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapon
 	}
 }
 
-void AFirstPersonCharacter::EquipRightWeapon(class AAkimboWeapon* InWeapon)
+void AAkimboPlayerCharacter::EquipRightWeapon(class AAkimboWeapon* InWeapon)
 {
 	RightWeapon = InWeapon;
 	OnRightWeaponEquipped(RightWeapon);
 }
 
-void AFirstPersonCharacter::EquipLeftWeapon(class AAkimboWeapon* InWeapon)
+void AAkimboPlayerCharacter::EquipLeftWeapon(class AAkimboWeapon* InWeapon)
 {
 	LeftWeapon = InWeapon;
 	OnLeftWeaponEquipped(LeftWeapon);
@@ -142,7 +142,7 @@ void AFirstPersonCharacter::EquipLeftWeapon(class AAkimboWeapon* InWeapon)
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void AFirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
+void AAkimboPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
@@ -153,20 +153,20 @@ void AFirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AFirstPersonCharacter::OnResetVR);
-	PlayerInputComponent->BindAction("ToggleVR", IE_Pressed, this, &AFirstPersonCharacter::ToggleVRMode);
+	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AAkimboPlayerCharacter::OnResetVR);
+	PlayerInputComponent->BindAction("ToggleVR", IE_Pressed, this, &AAkimboPlayerCharacter::ToggleVRMode);
 
 	// Bind movement events
-	PlayerInputComponent->BindAxis("MoveForward", this, &AFirstPersonCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AFirstPersonCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AAkimboPlayerCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AAkimboPlayerCharacter::MoveRight);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &AFirstPersonCharacter::TurnAtRate);
+	PlayerInputComponent->BindAxis("TurnRate", this, &AAkimboPlayerCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &AFirstPersonCharacter::LookUpAtRate);
+	PlayerInputComponent->BindAxis("LookUpRate", this, &AAkimboPlayerCharacter::LookUpAtRate);
 
 	// Attach the input to the ability system
 	if (InputComponent && AbilitySystemComponent)
@@ -179,12 +179,12 @@ void AFirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 //////////////////////////////////////////////////////////////////////////
 // VR MODE
 
-void AFirstPersonCharacter::OnResetVR()
+void AAkimboPlayerCharacter::OnResetVR()
 {
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
-void AFirstPersonCharacter::ToggleVRMode()
+void AAkimboPlayerCharacter::ToggleVRMode()
 {
 	IsVR = !IsVR;
 
@@ -194,7 +194,7 @@ void AFirstPersonCharacter::ToggleVRMode()
 //////////////////////////////////////////////////////////////////////////
 // MOVEMENT
 
-void AFirstPersonCharacter::MoveForward(float Value)
+void AAkimboPlayerCharacter::MoveForward(float Value)
 {
 	if (!IsVR && Value != 0.0f)
 	{
@@ -203,7 +203,7 @@ void AFirstPersonCharacter::MoveForward(float Value)
 	}
 }
 
-void AFirstPersonCharacter::MoveRight(float Value)
+void AAkimboPlayerCharacter::MoveRight(float Value)
 {
 	if (!IsVR && Value != 0.0f)
 	{
@@ -212,7 +212,7 @@ void AFirstPersonCharacter::MoveRight(float Value)
 	}
 }
 
-void AFirstPersonCharacter::TurnAtRate(float Rate)
+void AAkimboPlayerCharacter::TurnAtRate(float Rate)
 {
 	if (!IsVR)
 	{
@@ -221,7 +221,7 @@ void AFirstPersonCharacter::TurnAtRate(float Rate)
 	}
 }
 
-void AFirstPersonCharacter::LookUpAtRate(float Rate)
+void AAkimboPlayerCharacter::LookUpAtRate(float Rate)
 {
 	if (!IsVR)
 	{

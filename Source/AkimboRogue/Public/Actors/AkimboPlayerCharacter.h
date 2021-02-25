@@ -14,12 +14,12 @@
 #include "Actors/AkimboWeapon.h"
 #include "Actors/AkimboCharacter.h"
 
-#include "FirstPersonCharacter.generated.h"
+#include "AkimboPlayerCharacter.generated.h"
 
 class UInputComponent;
 
 UCLASS(config = Game)
-class AFirstPersonCharacter : public AAkimboCharacter
+class AAkimboPlayerCharacter : public AAkimboCharacter
 {
 	GENERATED_BODY()
 
@@ -50,7 +50,7 @@ protected:
 	class USceneComponent* L_FPHandPos;
 
 public:
-	AFirstPersonCharacter();
+	AAkimboPlayerCharacter();
 
 protected:
 	virtual void BeginPlay();

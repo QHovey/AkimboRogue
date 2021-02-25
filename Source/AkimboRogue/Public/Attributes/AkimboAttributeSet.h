@@ -30,6 +30,10 @@ public:
 	ATTRIBUTE_ACCESSORS(UAkimboAttributeSet, Health);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData HealthMax;
+	ATTRIBUTE_ACCESSORS(UAkimboAttributeSet, HealthMax);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
 	FGameplayAttributeData Damage;
 	ATTRIBUTE_ACCESSORS(UAkimboAttributeSet, Damage);
 	
