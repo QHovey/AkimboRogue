@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "AbilitySystemInterface.h"
-#include "AkimboAbilitySystemComponent.h"
-#include "AkimboGameplayEffect.h"
+#include "AbilitySystem/AkimboAbilitySystemComponent.h"
+#include "AbilitySystem/AkimboGameplayEffect.h"
 #include "AkimboPawn.generated.h"
 
 UCLASS()

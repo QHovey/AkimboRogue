@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "AkimboPawn.h"
-#include "AkimboAttributeSet.h"
-#include "AkimboGameplayAbility.h"
-#include "AkimboWeapon.h"
-#include <AbilitySystemComponent.h>
-#include <GameplayAbilitySpec.h>
+#include "Actors/AkimboPawn.h"
+#include "Attributes/AkimboAttributeSet.h"
+#include "AbilitySystem/AkimboGameplayAbility.h"
+#include "Actors/AkimboWeapon.h"
+#include "AbilitySystemComponent.h"
+#include "GameplayAbilitySpec.h"
 
 // Sets default values
 AAkimboPawn::AAkimboPawn()

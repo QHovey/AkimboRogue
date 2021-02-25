@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "FirstPersonCharacter.h"
+#include "Actors/FirstPersonCharacter.h"
+
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -10,11 +11,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 
-#include "AkimboAttributeSet.h"
-#include "AkimboGameplayAbility.h"
-#include "AkimboGameplayEffect.h"
-#include "AkimboWeapon.h"
-#include "AkimboAbilitySystemComponent.h"
+#include "Attributes/AkimboAttributeSet.h"
+#include "AbilitySystem/AkimboGameplayAbility.h"
+#include "AbilitySystem/AkimboGameplayEffect.h"
+#include "Actors/AkimboWeapon.h"
+#include "AbilitySystem/AkimboAbilitySystemComponent.h"
 
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 

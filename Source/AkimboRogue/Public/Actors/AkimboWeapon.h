@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include <AbilitySystemInterface.h>
-#include "AkimboGameplayAbility.h"
+#include "AbilitySystemInterface.h"
+#include "AbilitySystem/AkimboGameplayAbility.h"
 #include "AkimboWeapon.generated.h"
 
 UCLASS()

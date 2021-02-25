@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "AkimboGameplayEffect.h"
+#include "AbilitySystem/AkimboGameplayEffect.h"
 

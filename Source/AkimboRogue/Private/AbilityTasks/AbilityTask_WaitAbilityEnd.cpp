@@ -1,8 +1,7 @@
 
 
+#include "AbilityTasks/AbilityTask_WaitAbilityEnd.h"
 #include "AbilitySystemComponent.h"
-#include "AbilityTask_WaitAbilityEnd.h"
-
 
 UAbilityTask_WaitAbilityEnd::UAbilityTask_WaitAbilityEnd(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

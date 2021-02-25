@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AkimboCharacter.h"
-#include "AkimboAbilitySystemComponent.h"
-#include "AkimboAttributeSet.h"
-#include "AkimboGameplayAbility.h"
-#include "AkimboGameplayEffect.h"
+#include "Actors/AkimboCharacter.h"
+#include "AbilitySystem/AkimboAbilitySystemComponent.h"
+#include "Attributes/AkimboAttributeSet.h"
+#include "AbilitySystem/AkimboGameplayAbility.h"
+#include "AbilitySystem/AkimboGameplayEffect.h"
 
 // Sets default values
 AAkimboCharacter::AAkimboCharacter()

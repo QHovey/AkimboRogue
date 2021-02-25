@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AkimboWeapon.h"
-#include "AkimboGameplayAbility.h"
-#include "AkimboAbilitySystemComponent.h"
-#include "AkimboGameplayEffect.h"
-#include "AkimboGameplayAbility.h"
-#include "AkimboAttributeSet.h"
+#include "Actors/AkimboWeapon.h"
+#include "AbilitySystem/AkimboGameplayAbility.h"
+#include "AbilitySystem/AkimboAbilitySystemComponent.h"
+#include "AbilitySystem/AkimboGameplayEffect.h"
+#include "AbilitySystem/AkimboGameplayAbility.h"
+#include "Attributes/AkimboAttributeSet.h"
 
 // Sets default values
 AAkimboWeapon::AAkimboWeapon()

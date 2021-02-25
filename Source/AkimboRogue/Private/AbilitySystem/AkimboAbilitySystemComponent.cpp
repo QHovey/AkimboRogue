@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "AkimboAbilitySystemComponent.h"
+#include "AbilitySystem/AkimboAbilitySystemComponent.h"
 
 /////////////////////////////////////////////////////////////////////////
 // Copy-Paste override implementation of the tow BindToInputComponent methods so that I can turn off the INFURIATING 

@@ -2,15 +2,17 @@
 
 #pragma once
 
+// Engine Includes
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include <AbilitySystemComponent.h>
-#include <GameplayAbilitySpec.h>
+#include "AbilitySystemComponent.h"
+#include "GameplayAbilitySpec.h"
 
-#include "AkimboAttributeSet.h"
-#include "AkimboGameplayAbility.h"
-#include "AkimboWeapon.h"
-#include "AkimboCharacter.h"
+// Project Includes
+#include "Attributes/AkimboAttributeSet.h"
+#include "AbilitySystem/AkimboGameplayAbility.h"
+#include "Actors/AkimboWeapon.h"
+#include "Actors/AkimboCharacter.h"
 
 #include "FirstPersonCharacter.generated.h"
 
