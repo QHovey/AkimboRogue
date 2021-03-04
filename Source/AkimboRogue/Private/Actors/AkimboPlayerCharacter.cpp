@@ -67,7 +67,11 @@ void AAkimboPlayerCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+#if PLATFORM_WINDOWS | WITH_EDITOR
 	OnVRModeChanged(IsVR);
+#else
+	OnVRModeChanged(true);
+#endif
 }
 
 void AAkimboPlayerCharacter::PossessedBy(AController* NewController)
@@ -130,12 +134,14 @@ void AAkimboPlayerCharacter::RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapo
 void AAkimboPlayerCharacter::EquipRightWeapon(class AAkimboWeapon* InWeapon)
 {
 	RightWeapon = InWeapon;
+	RightWeapon->OnEquippedBy(this);
 	OnRightWeaponEquipped(RightWeapon);
 }
 
 void AAkimboPlayerCharacter::EquipLeftWeapon(class AAkimboWeapon* InWeapon)
 {
 	LeftWeapon = InWeapon;
+	LeftWeapon->OnEquippedBy(this);
 	OnLeftWeaponEquipped(LeftWeapon);
 }
 

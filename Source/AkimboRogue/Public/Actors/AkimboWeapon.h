@@ -28,7 +28,7 @@ public:
 public:
 	class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	void OnEquippedBy(AActor* Equipper);
+	void OnEquippedBy(APawn* Equipper);
 
 private:
 

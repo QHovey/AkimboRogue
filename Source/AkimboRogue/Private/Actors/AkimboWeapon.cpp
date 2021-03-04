@@ -25,12 +25,6 @@ void AAkimboWeapon::BeginPlay()
 
 	InitializeAttributes();
 	GiveAbilities();
-
-	if (InputComponent)
-	{
-		const FGameplayAbilityInputBinds InputBinds("Confirm", "Cancel", "EAkimboAbilityInputID");
-		AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, InputBinds);
-	}
 }
 
 // Called every frame
@@ -45,11 +39,22 @@ UAbilitySystemComponent* AAkimboWeapon::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void AAkimboWeapon::OnEquippedBy(AActor* Equipper)
+void AAkimboWeapon::OnEquippedBy(APawn* Equipper)
 {
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->InitAbilityActorInfo(this, Equipper);
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+		APlayerController* PC = Equipper->GetController<APlayerController>();
+		if (PC)
+		{
+			EnableInput(PC);
+			if (ensure(InputComponent))
+			{
+				const FGameplayAbilityInputBinds InputBinds("Confirm", "Cancel", "EAkimboAbilityInputID");
+				AbilitySystemComponent->BindAbilityActivationToInputComponent(Equipper->InputComponent, InputBinds);
+			}
+		}
 	}
 }
 

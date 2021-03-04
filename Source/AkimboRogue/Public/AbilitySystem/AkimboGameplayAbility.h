@@ -27,6 +27,14 @@ class AKIMBOROGUE_API UAkimboGameplayAbility : public UGameplayAbility
 
 public:
 
+	//////////////////////////////////////////////////////////////////////////
+	// UGameplayAbility
+
+	void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
+public:
+
 	// InputID to assign this ability to by default. Enum name must match an Input name in the Project Settings->Input mappings
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EAkimboAbilityInputID AbilityInputID = EAkimboAbilityInputID::None;
