@@ -126,6 +126,7 @@ void AAkimboPlayerCharacter::RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapo
 		UAkimboAbilitySystemComponent* ASC = Cast<UAkimboAbilitySystemComponent>(Weapon->GetAbilitySystemComponent());
 		if (ASC)
 		{
+			// This doesnt work...
 			ASC->RemoveActiveGameplayEffect(SpecToRemove.Handle);
 		}
 	}
