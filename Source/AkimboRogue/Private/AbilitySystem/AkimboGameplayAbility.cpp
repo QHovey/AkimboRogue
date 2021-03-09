@@ -2,6 +2,8 @@
 
 #include "AbilitySystem/AkimboGameplayAbility.h"
 #include <AbilitySystemComponent.h>
+#include <AbilitySystemGlobals.h>
+#include "AbilitySystem/AkimboAbilitySystemComponent.h"
 
 void UAkimboGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
@@ -11,7 +13,7 @@ void UAkimboGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* Acto
 		TArray<TSubclassOf<UGameplayAbility>> subAbilities;
 		GetSubAbilities(subAbilities);
 		for (TSubclassOf<UGameplayAbility>& sub : subAbilities) {
-			m_subAbilityHandles.Add(ActorInfo->AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(sub, Spec.Level, Spec.InputID, Spec.SourceObject)));
+			m_subAbilityHandles.Add(ActorInfo->AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(sub, Spec.Level, -1, Spec.SourceObject)));
 		}
 	}
 }
@@ -34,20 +36,58 @@ bool UAkimboGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle
 		return false;
 	}
 
+	bool bBlocked = false;
+	bool bMissing = false;
+
+	if (UAkimboAbilitySystemComponent* AkimboASC = Cast<UAkimboAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get()))
+	{
+		UAkimboAbilitySystemComponent* RootOwnerASC = AkimboASC->GetRootOwnerASC();
+		if (OwnerBlockedTags.Num())
+		{
+			if (RootOwnerASC->HasAnyMatchingGameplayTags(OwnerBlockedTags))
+			{
+				bBlocked = true;
+			}
+		}
+		if (OwnerRequiredTags.Num())
+		{
+			if (!RootOwnerASC->HasAllMatchingGameplayTags(OwnerRequiredTags))
+			{
+				bMissing = true;
+			}
+		}
+
+		static FGameplayTagContainer AbilitySystemComponentTags;
+		AbilitySystemComponentTags.Reset();
+
+		RootOwnerASC->GetOwnedGameplayTags(AbilitySystemComponentTags);
+
+		// Add any more blocked / missing checks here
+
+		// Check fail cases, output optional reason tag, and return
+		UAbilitySystemGlobals& AbilitySystemGlobals = UAbilitySystemGlobals::Get();
+		if (bBlocked)
+		{
+			if (OptionalRelevantTags && AbilitySystemGlobals.ActivateFailTagsBlockedTag.IsValid())
+			{
+				OptionalRelevantTags->AddTag(AbilitySystemGlobals.ActivateFailTagsBlockedTag);
+			}
+			return false;
+		}
+		if (bMissing)
+		{
+			if (OptionalRelevantTags && AbilitySystemGlobals.ActivateFailTagsMissingTag.IsValid())
+			{
+				OptionalRelevantTags->AddTag(AbilitySystemGlobals.ActivateFailTagsMissingTag);
+			}
+			return false;
+		}
+	}
+
 	return true;
 }
 
 void UAkimboGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
-}
-
-bool UAkimboGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags /*= nullptr*/, const FGameplayTagContainer* TargetTags /*= nullptr*/, OUT FGameplayTagContainer* OptionalRelevantTags /*= nullptr*/) const
-{
-	if (!Super::DoesAbilitySatisfyTagRequirements(AbilitySystemComponent, nullptr, nullptr, nullptr))
-	{
-		return false;
-	}
-
-	return true;
 }

@@ -34,7 +34,6 @@ public:
 	void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-	bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 
 public:
 
@@ -45,22 +44,28 @@ public:
 
 public:
 
-	/** This ability is blocked if the source pawn/character has any of these tags. Typically the owner of a weapon */
+	/** This ability can only be activated if the root owner of the ASC chain has all of these tags */
 	UPROPERTY(EditDefaultsOnly, Category = Tags, meta = (Categories = "SourceTagsCategory"))
-	FGameplayTagContainer SourcePawnBlockedTags;
+	FGameplayTagContainer OwnerRequiredTags;
+
+	// This ability is blocked if the root owner of the ASC chain has any of these tags
+	UPROPERTY(EditDefaultsOnly, Category = Tags, meta = (Categories = "RootOwnerTagsCategory"))
+	FGameplayTagContainer OwnerBlockedTags;
 
 public:
 
 	// InputID to assign this ability to by default. Enum name must match an Input name in the Project Settings->Input mappings
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Input")
 	EAkimboAbilityInputID AbilityInputID = EAkimboAbilityInputID::None;
 	
 	// Is this ability triggered directly by input. This is used primarily by Weapons who'll assign it's own input ID to the ability spec.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Input")
 	bool IsTriggerAbility = false;
+
 
 private:
 
+	// Keeps track of the sub abilities we added to our ASC
 	TArray<FGameplayAbilitySpecHandle> m_subAbilityHandles;
 
 };

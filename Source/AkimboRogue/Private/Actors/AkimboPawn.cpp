@@ -29,8 +29,6 @@ void AAkimboPawn::PossessedBy(AController* NewController)
 
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
 		AbilitySystemComponent->OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &AAkimboPawn::OnApplyGameplayEffectToSelfCallback);
 	}
 

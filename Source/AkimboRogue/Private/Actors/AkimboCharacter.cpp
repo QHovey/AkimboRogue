@@ -23,6 +23,7 @@ void AAkimboCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 // Called every frame
@@ -35,11 +36,6 @@ void AAkimboCharacter::Tick(float DeltaTime)
 void AAkimboCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
-	if (AbilitySystemComponent)
-	{
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	}
 
 	InitializeAttributes();
 	GiveAbilities();

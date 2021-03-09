@@ -21,10 +21,10 @@ public:
 	/** Bind to an input component with customized bindings */
 	virtual void BindAbilityActivationToInputComponent(UInputComponent* InputComponent, FGameplayAbilityInputBinds BindInfo);
 
-	// Set the owner/parent ASC of this child ASC. Used to follow a chain of ASCs back to the original owner of the chain.
+	// Set the parent ASC of this child ASC. Used to follow a chain of ASCs back to the original owner of the chain.
 	void SetOwnerASC(UAkimboAbilitySystemComponent* NewOwner) { OwnerAbilitySystem = NewOwner; }
 	
-	// Follows the chain of OwnerbilityComponents and returns the root. May return itself.
+	// Follows the chain of ParentAbilityComponents and returns the root. May return itself.
 	UAkimboAbilitySystemComponent* GetRootOwnerASC();
 
 protected:

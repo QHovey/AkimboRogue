@@ -38,7 +38,7 @@ private:
 protected:
 
 	UPROPERTY(BlueprintReadWrite)
-	class UAbilitySystemComponent* AbilitySystemComponent;
+	class UAkimboAbilitySystemComponent* AbilitySystemComponent;
 
 	UPROPERTY()
 	class UAkimboAttributeSet* Attributes;

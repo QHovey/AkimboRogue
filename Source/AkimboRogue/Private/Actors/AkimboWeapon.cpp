@@ -23,6 +23,8 @@ void AAkimboWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
 	InitializeAttributes();
 	GiveAbilities();
 }
@@ -43,8 +45,6 @@ void AAkimboWeapon::OnEquippedBy(APawn* Equipper)
 {
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
-
 		APlayerController* PC = Equipper->GetController<APlayerController>();
 		if (PC)
 		{
@@ -53,6 +53,15 @@ void AAkimboWeapon::OnEquippedBy(APawn* Equipper)
 			{
 				const FGameplayAbilityInputBinds InputBinds("Confirm", "Cancel", "EAkimboAbilityInputID");
 				AbilitySystemComponent->BindAbilityActivationToInputComponent(Equipper->InputComponent, InputBinds);
+			}
+		}
+
+		// Set our ASC as the child of our equippers ASC
+		if (IAbilitySystemInterface* IEquipperASC = Cast<IAbilitySystemInterface>(Equipper))
+		{
+			UAkimboAbilitySystemComponent* EquipperASC = Cast<UAkimboAbilitySystemComponent>(IEquipperASC->GetAbilitySystemComponent());
+			if (AbilitySystemComponent) {
+				AbilitySystemComponent->SetOwnerASC(EquipperASC);
 			}
 		}
 	}

@@ -80,3 +80,12 @@ void UAkimboAbilitySystemComponent::BindAbilityActivationToInputComponent(UInput
 		GenericConfirmInputID = BindInfo.ConfirmTargetInputID;
 	}
 }
+
+UAkimboAbilitySystemComponent* UAkimboAbilitySystemComponent::GetRootOwnerASC()
+{
+	if (OwnerAbilitySystem.IsValid())
+	{
+		return OwnerAbilitySystem->GetRootOwnerASC();
+	}
+	return this;
+}
