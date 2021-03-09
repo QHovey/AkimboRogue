@@ -78,12 +78,6 @@ void AAkimboPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	// Player will route gameplay effects to the weapons to keep them in sync via this delegate
-	if (AbilitySystemComponent)
-	{
-		AbilitySystemComponent->OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &AAkimboPlayerCharacter::OnApplyGameplayEffectToSelfCallback);
-		AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &AAkimboPlayerCharacter::OnRemoveGameplayEffect);
-	}
 }
 
 void AAkimboPlayerCharacter::OnConstruction(const FTransform& Transform)
@@ -94,43 +88,6 @@ void AAkimboPlayerCharacter::OnConstruction(const FTransform& Transform)
 
 //////////////////////////////////////////////////////////////////////////
 // AbilitySystem
-
-void AAkimboPlayerCharacter::OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
-{
-	ApplyGameplayEffectToWeapon(RightWeapon, SpecApplied);
-	ApplyGameplayEffectToWeapon(LeftWeapon, SpecApplied);
-}
-
-void AAkimboPlayerCharacter::OnRemoveGameplayEffect(const FActiveGameplayEffect& RemovedEffect)
-{
-	RemoveGameplayEffectFromWeapon(RightWeapon, RemovedEffect);
-	RemoveGameplayEffectFromWeapon(LeftWeapon, RemovedEffect);
-}
-
-void AAkimboPlayerCharacter::ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, const FGameplayEffectSpec& SpecApplied)
-{
-	if (Weapon)
-	{
-		UAkimboAbilitySystemComponent* ASC = Cast<UAkimboAbilitySystemComponent>(Weapon->GetAbilitySystemComponent());
-		if (ASC)
-		{
-			ASC->ApplyGameplayEffectSpecToSelf(SpecApplied);
-		}
-	}
-}
-
-void AAkimboPlayerCharacter::RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapon, const FActiveGameplayEffect& SpecToRemove)
-{
-	if (Weapon)
-	{
-		UAkimboAbilitySystemComponent* ASC = Cast<UAkimboAbilitySystemComponent>(Weapon->GetAbilitySystemComponent());
-		if (ASC)
-		{
-			// This doesnt work...
-			ASC->RemoveActiveGameplayEffect(SpecToRemove.Handle);
-		}
-	}
-}
 
 void AAkimboPlayerCharacter::EquipRightWeapon(class AAkimboWeapon* InWeapon)
 {

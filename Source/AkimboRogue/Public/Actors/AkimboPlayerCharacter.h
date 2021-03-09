@@ -61,15 +61,6 @@ protected:
 	/* AbilitySystem Methods                                              */
 	/************************************************************************/
 
-	// Callback for when a GameplayEffect is applied to ourselves
-	void OnApplyGameplayEffectToSelfCallback(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
-	void OnRemoveGameplayEffect(const FActiveGameplayEffect& RemovedEffect);
-	
-	// We automatically route gameplay effects to the weapons as they are treated as an extension of ourselves. Thus Guns can be buffed, stunned, etc. 
-	// Not all gameplay effects need to be routed, and will have a flag that determines if it should be.
-	void ApplyGameplayEffectToWeapon(AAkimboWeapon* Weapon, const FGameplayEffectSpec& SpecApplied);
-	void RemoveGameplayEffectFromWeapon(AAkimboWeapon* Weapon, const FActiveGameplayEffect& SpecToRemove);
-
 public:
 
 	/************************************************************************/
