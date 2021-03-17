@@ -94,7 +94,8 @@ void AAkimboWeapon::GiveAbilities()
 			{
 				inputID = TriggerInput;
 			}
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(inputID), this));
+			AbilitySystemComponent->GiveAndSlotAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(inputID), this),
+				Ability.GetDefaultObject()->DefaultSlot);
 		}
 	}
 }

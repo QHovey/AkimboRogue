@@ -1,6 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AbilitySystem/AkimboAbilitySystemComponent.h"
+#include "AbilitySystem/AkimboGameplayAbility.h"
+#include <GameplayAbilitySpec.h>
+
+UAkimboAbilitySystemComponent::UAkimboAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
+{
+	SlottedAbilities.AddDefaulted((uint8)EAbilitySlot::SLOT_COUNT);
+}
 
 /////////////////////////////////////////////////////////////////////////
 // Copy-Paste override implementation of the tow BindToInputComponent methods so that I can turn off the INFURIATING 
@@ -81,6 +88,26 @@ void UAkimboAbilitySystemComponent::BindAbilityActivationToInputComponent(UInput
 	}
 }
 
+void UAkimboAbilitySystemComponent::GiveAndSlotAbility(const FGameplayAbilitySpec& Spec, EAbilitySlot Slot)
+{
+	FGameplayAbilitySpecHandle handle = GiveAbility(Spec);
+	if (handle.IsValid() && Slot != EAbilitySlot::SLOT_INVALID)
+	{
+		SlottedAbilities[(uint8)Slot] = handle;
+	}
+}
+
+void UAkimboAbilitySystemComponent::RemoveSlottedAbility(EAbilitySlot Slot)
+{
+	static FGameplayAbilitySpecHandle InvalidHandle = FGameplayAbilitySpecHandle();
+	FGameplayAbilitySpecHandle& handle = SlottedAbilities[(uint8)Slot];
+	if (handle.IsValid())
+	{
+		ClearAbility(handle);
+		SlottedAbilities[(uint8)Slot] = InvalidHandle;
+	}
+}
+
 UAkimboAbilitySystemComponent* UAkimboAbilitySystemComponent::GetRootOwnerASC()
 {
 	if (OwnerAbilitySystem.IsValid())
@@ -88,4 +115,51 @@ UAkimboAbilitySystemComponent* UAkimboAbilitySystemComponent::GetRootOwnerASC()
 		return OwnerAbilitySystem->GetRootOwnerASC();
 	}
 	return this;
+}
+
+bool UAkimboAbilitySystemComponent::TryActivateAkimboAbilityByClass(TSubclassOf<UAkimboGameplayAbility> Ability, UAkimboGameplayAbility*& ActiveAbility)
+{
+	FGameplayAbilitySpec* SpecPtr = FindAbilitySpecFromClass(Ability);
+	if (SpecPtr)
+	{
+		FGameplayAbilitySpec& Spec = *SpecPtr;
+		return activateAkimboAbility(Spec, ActiveAbility);
+	}
+	return false;
+}
+
+bool UAkimboAbilitySystemComponent::TryActivateAkimboAbilityBySlot(EAbilitySlot Slot, UAkimboGameplayAbility*& ActiveAbility)
+{
+	FGameplayAbilitySpec* SpecPtr = FindAbilitySpecFromHandle(SlottedAbilities[(uint8)Slot]);
+	if (SpecPtr)
+	{
+		FGameplayAbilitySpec& Spec = *SpecPtr;
+		return activateAkimboAbility(Spec, ActiveAbility);
+	}
+	return false;
+}
+
+bool UAkimboAbilitySystemComponent::activateAkimboAbility(const FGameplayAbilitySpec& Spec, UAkimboGameplayAbility*& ActiveAbility)
+{
+	bool bSuccess = TryActivateAbility(Spec.Handle, false);
+	if (bSuccess)
+	{
+		// Ability successfully activated.
+		// 
+		// Ability could end immediately in a single frame, in which case ActiveCount will be 0
+		if (Spec.ActiveCount > 0)
+		{
+			if (Spec.Ability->GetInstancingPolicy() == EGameplayAbilityInstancingPolicy::NonInstanced)
+			{
+				ActiveAbility = CastChecked<UAkimboGameplayAbility>(Spec.Ability);
+			}
+			else
+			{
+				ActiveAbility = CastChecked<UAkimboGameplayAbility>(Spec.Ability->GetInstancingPolicy() == EGameplayAbilityInstancingPolicy::InstancedPerActor ?
+					Spec.NonReplicatedInstances[0] : Spec.NonReplicatedInstances[Spec.NonReplicatedInstances.Num() - 1]);
+			}
+		}
+		return bSuccess;
+	}
+	return false;
 }

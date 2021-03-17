@@ -6,6 +6,7 @@
 #include "Attributes/AkimboAttributeSet.h"
 #include "AbilitySystem/AkimboGameplayAbility.h"
 #include "AbilitySystem/AkimboGameplayEffect.h"
+#include "Actors/AkimboWeapon.h"
 
 // Sets default values
 AAkimboCharacter::AAkimboCharacter()
@@ -68,7 +69,22 @@ void AAkimboCharacter::GiveAbilities()
 	{
 		for (TSubclassOf<UAkimboGameplayAbility>& Ability : DefaultAbilities)
 		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(Ability.GetDefaultObject()->AbilityInputID), this));
+			AbilitySystemComponent->GiveAndSlotAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(Ability.GetDefaultObject()->AbilityInputID), this),
+				Ability.GetDefaultObject()->DefaultSlot);
 		}
 	}
+}
+
+void AAkimboCharacter::EquipRightWeapon(class AAkimboWeapon* InWeapon)
+{
+	RightWeapon = InWeapon;
+	RightWeapon->OnEquippedBy(this);
+	OnRightWeaponEquipped(RightWeapon);
+}
+
+void AAkimboCharacter::EquipLeftWeapon(class AAkimboWeapon* InWeapon)
+{
+	LeftWeapon = InWeapon;
+	LeftWeapon->OnEquippedBy(this);
+	OnLeftWeaponEquipped(LeftWeapon);
 }

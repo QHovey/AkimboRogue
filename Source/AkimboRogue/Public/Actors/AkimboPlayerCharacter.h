@@ -53,37 +53,10 @@ public:
 	AAkimboPlayerCharacter();
 
 protected:
+
 	virtual void BeginPlay();
 	virtual void PossessedBy(AController* NewController);
 	virtual void OnConstruction(const FTransform& Transform) override;
-
-	/************************************************************************/
-	/* AbilitySystem Methods                                              */
-	/************************************************************************/
-
-public:
-
-	/************************************************************************/
-	/* Weapon Management	                                                */
-	/************************************************************************/
-
-public:
-
-	UFUNCTION(BlueprintCallable)
-	void EquipRightWeapon(class AAkimboWeapon* InWeapon);
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnRightWeaponEquipped(class AAkimboWeapon* Weapon);
-
-	UFUNCTION(BlueprintCallable)
-	void EquipLeftWeapon(class AAkimboWeapon* InWeapon);
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnLeftWeaponEquipped(class AAkimboWeapon* Weapon);
-
-protected:
-	UPROPERTY(BlueprintReadOnly)
-	class AAkimboWeapon* RightWeapon;
-	UPROPERTY(BlueprintReadOnly)
-	class AAkimboWeapon* LeftWeapon;
 
 public:
 

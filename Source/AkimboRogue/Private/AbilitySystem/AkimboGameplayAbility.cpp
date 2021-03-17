@@ -5,6 +5,12 @@
 #include <AbilitySystemGlobals.h>
 #include "AbilitySystem/AkimboAbilitySystemComponent.h"
 
+UAkimboGameplayAbility::UAkimboGameplayAbility(const FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer)
+{
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+}
+
 void UAkimboGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnGiveAbility(ActorInfo, Spec);
@@ -90,4 +96,20 @@ bool UAkimboGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle
 void UAkimboGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
+}
+
+void UAkimboGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	
+	OnAbilityEnded.Broadcast(this, bWasCancelled);
+}
+
+UAkimboAbilitySystemComponent* UAkimboGameplayAbility::GetAkimboAbilitySystemComponent() const
+{
+	if (!ensure(CurrentActorInfo))
+	{
+		return nullptr;
+	}
+	return Cast<UAkimboAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get());
 }

@@ -87,23 +87,6 @@ void AAkimboPlayerCharacter::OnConstruction(const FTransform& Transform)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// AbilitySystem
-
-void AAkimboPlayerCharacter::EquipRightWeapon(class AAkimboWeapon* InWeapon)
-{
-	RightWeapon = InWeapon;
-	RightWeapon->OnEquippedBy(this);
-	OnRightWeaponEquipped(RightWeapon);
-}
-
-void AAkimboPlayerCharacter::EquipLeftWeapon(class AAkimboWeapon* InWeapon)
-{
-	LeftWeapon = InWeapon;
-	LeftWeapon->OnEquippedBy(this);
-	OnLeftWeaponEquipped(LeftWeapon);
-}
-
-//////////////////////////////////////////////////////////////////////////
 // Input
 
 void AAkimboPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)

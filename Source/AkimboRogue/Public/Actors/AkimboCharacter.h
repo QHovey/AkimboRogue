@@ -64,4 +64,27 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Abilities")
 	TArray<TSubclassOf<class UAkimboGameplayAbility>> DefaultAbilities;
+
+public:
+
+	/************************************************************************/
+	/* Weapon Management	                                                */
+	/************************************************************************/
+
+	UFUNCTION(BlueprintCallable)
+	void EquipRightWeapon(class AAkimboWeapon* InWeapon);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnRightWeaponEquipped(class AAkimboWeapon* Weapon);
+
+	UFUNCTION(BlueprintCallable)
+	void EquipLeftWeapon(class AAkimboWeapon* InWeapon);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnLeftWeaponEquipped(class AAkimboWeapon* Weapon);
+
+protected:
+
+	UPROPERTY(BlueprintReadOnly)
+	class AAkimboWeapon* RightWeapon;
+	UPROPERTY(BlueprintReadOnly)
+	class AAkimboWeapon* LeftWeapon;
 };

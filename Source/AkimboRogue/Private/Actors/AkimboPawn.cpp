@@ -76,7 +76,8 @@ void AAkimboPawn::GiveAbilities()
 	{
 		for (TSubclassOf<UAkimboGameplayAbility>& Ability : DefaultAbilities)
 		{
-			AbilitySystemComponent->GiveAbility(FGameplayAbilitySpec(Ability, 1, 0, this));
+			AbilitySystemComponent->GiveAndSlotAbility(FGameplayAbilitySpec(Ability, 1, 0, this),
+				Ability.GetDefaultObject()->DefaultSlot);
 		}
 	}
 }
