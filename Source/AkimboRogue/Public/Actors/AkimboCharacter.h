@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
-
+#include <GameplayEffectTypes.h>
 #include "AkimboCharacter.generated.h"
 
 UCLASS()
@@ -80,6 +80,19 @@ public:
 	void EquipLeftWeapon(class AAkimboWeapon* InWeapon);
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnLeftWeaponEquipped(class AAkimboWeapon* Weapon);
+
+protected:
+
+	/************************************************************************/
+	/* Attribute Listeners						                            */
+	/************************************************************************/
+	void OnHealthAttributeChangeCallback(const FOnAttributeChangeData& Data);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnHealthChange(float OldHealth, float NewHealth);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDeath();
 
 protected:
 

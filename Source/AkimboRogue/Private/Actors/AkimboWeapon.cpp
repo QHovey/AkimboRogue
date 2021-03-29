@@ -26,7 +26,6 @@ void AAkimboWeapon::BeginPlay()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
 	InitializeAttributes();
-	GiveAbilities();
 }
 
 // Called every frame
@@ -41,7 +40,7 @@ UAbilitySystemComponent* AAkimboWeapon::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void AAkimboWeapon::OnEquippedBy(APawn* Equipper)
+void AAkimboWeapon::OnEquippedBy(APawn* Equipper, EHand EquippedToHand)
 {
 	if (AbilitySystemComponent)
 	{
@@ -64,6 +63,8 @@ void AAkimboWeapon::OnEquippedBy(APawn* Equipper)
 				AbilitySystemComponent->SetOwnerASC(EquipperASC);
 			}
 		}
+
+		GiveAbilities(EquippedToHand);
 	}
 }
 
@@ -83,16 +84,16 @@ void AAkimboWeapon::InitializeAttributes()
 	}
 }
 
-void AAkimboWeapon::GiveAbilities()
+void AAkimboWeapon::GiveAbilities(EHand EquippedToHand)
 {
 	if (AbilitySystemComponent)
 	{
 		for (TSubclassOf<UAkimboGameplayAbility>& Ability : DefaultAbilities)
 		{
-			EAkimboAbilityInputID inputID = Ability.GetDefaultObject()->AbilityInputID;
-			if (Ability.GetDefaultObject()->IsTriggerAbility)
+			EAkimboAbilityInputID inputID = EAkimboAbilityInputID::None;
+			if (Ability.GetDefaultObject()->IsTriggerAbility && EquippedToHand != EHand::NONE)
 			{
-				inputID = TriggerInput;
+				inputID = EquippedToHand == EHand::LEFT ? EAkimboAbilityInputID::ShootLeft : EAkimboAbilityInputID::ShootRight;
 			}
 			AbilitySystemComponent->GiveAndSlotAbility(FGameplayAbilitySpec(Ability, 1, static_cast<int32>(inputID), this),
 				Ability.GetDefaultObject()->DefaultSlot);

@@ -8,6 +8,14 @@
 #include "AbilitySystem/AkimboGameplayAbility.h"
 #include "AkimboWeapon.generated.h"
 
+UENUM(BlueprintType)
+enum class EHand : uint8
+{
+	NONE,
+	LEFT,
+	RIGHT
+};
+
 UCLASS()
 class AKIMBOROGUE_API AAkimboWeapon : public AActor, public IAbilitySystemInterface
 {
@@ -28,12 +36,12 @@ public:
 public:
 	class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	void OnEquippedBy(APawn* Equipper);
+	void OnEquippedBy(APawn* Equipper, EHand EquippedToHand);
 
 private:
 
 	void InitializeAttributes();
-	void GiveAbilities();
+	void GiveAbilities(EHand EquippedToHand);
 
 protected:
 
@@ -48,8 +56,4 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Abilities")
 	TArray<TSubclassOf<class UAkimboGameplayAbility>> DefaultAbilities;
-
-	// This weapon assigns trigger abilities to this button ID
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities");
-	EAkimboAbilityInputID TriggerInput;
 };

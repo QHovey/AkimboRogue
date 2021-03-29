@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include <GameplayEffectTypes.h>
 #include "AkimboAbilitySystemComponent.generated.h"
 
 class UAkimboGameplayAbility;

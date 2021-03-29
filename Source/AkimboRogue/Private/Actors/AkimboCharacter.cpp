@@ -24,7 +24,13 @@ void AAkimboCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+		// Register listeners
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetHealthAttribute()).AddUObject(this, &AAkimboCharacter::OnHealthAttributeChangeCallback);
+	}
 }
 
 // Called every frame
@@ -78,13 +84,22 @@ void AAkimboCharacter::GiveAbilities()
 void AAkimboCharacter::EquipRightWeapon(class AAkimboWeapon* InWeapon)
 {
 	RightWeapon = InWeapon;
-	RightWeapon->OnEquippedBy(this);
+	RightWeapon->OnEquippedBy(this, EHand::RIGHT);
 	OnRightWeaponEquipped(RightWeapon);
 }
 
 void AAkimboCharacter::EquipLeftWeapon(class AAkimboWeapon* InWeapon)
 {
 	LeftWeapon = InWeapon;
-	LeftWeapon->OnEquippedBy(this);
+	LeftWeapon->OnEquippedBy(this, EHand::LEFT);
 	OnLeftWeaponEquipped(LeftWeapon);
+}
+
+void AAkimboCharacter::OnHealthAttributeChangeCallback(const FOnAttributeChangeData& Data)
+{
+	OnHealthChange(Data.OldValue, Data.NewValue);
+
+	if (Data.NewValue <= 0) {
+		OnDeath();
+	}
 }
